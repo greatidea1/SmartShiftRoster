@@ -1,0 +1,382 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Shift Roster Pro{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .dashboard-title {
+        color: #667eea;
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        text-align: center;
+    }
+
+    .dashboard-subtitle {
+        color: #666;
+        font-size: 1.1rem;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .calendar-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .calendar-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .calendar-title {
+        color: #667eea;
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 1px;
+        background: #e1e5e9;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .calendar-day-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1rem;
+        text-align: center;
+        font-weight: bold;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .calendar-date-header {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+        padding: 0.8rem;
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+
+    .calendar-cell {
+        background: white;
+        padding: 1rem;
+        min-height: 120px;
+        border: none;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .calendar-cell:hover {
+        background: rgba(102, 126, 234, 0.05);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .calendar-cell.today {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        border: 2px solid #667eea;
+    }
+
+    .calendar-cell.empty {
+        background: #f8f9fa;
+        opacity: 0.5;
+    }
+
+    .shift-info {
+        margin-top: 0.5rem;
+    }
+
+    .shift-block {
+        background: rgba(102, 126, 234, 0.1);
+        border-left: 3px solid #667eea;
+        padding: 0.3rem 0.5rem;
+        margin-bottom: 0.3rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+    }
+
+    .shift-time {
+        font-weight: bold;
+        color: #667eea;
+        margin-bottom: 0.2rem;
+    }
+
+    .shift-users {
+        color: #666;
+        font-size: 0.7rem;
+    }
+
+    .shift-user {
+        display: inline-block;
+        background: rgba(102, 126, 234, 0.2);
+        color: #667eea;
+        padding: 0.1rem 0.3rem;
+        border-radius: 3px;
+        margin: 0.1rem;
+        font-size: 0.65rem;
+    }
+
+    .team-section {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .team-header {
+        color: #667eea;
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+    .team-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+
+    .team-member {
+        background: rgba(255, 255, 255, 0.8);
+        border: 2px solid #e1e5e9;
+        border-radius: 12px;
+        padding: 1rem;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+    .team-member:hover {
+        border-color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+    }
+
+    .team-member-name {
+        font-weight: bold;
+        color: #333;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .team-member-role {
+        color: #667eea;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .team-member-designation {
+        color: #666;
+        font-size: 0.8rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #667eea;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: #666;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    @media (max-width: 768px) {
+        .calendar-grid {
+            font-size: 0.8rem;
+        }
+        
+        .calendar-cell {
+            min-height: 80px;
+            padding: 0.5rem;
+        }
+        
+        .dashboard-title {
+            font-size: 2rem;
+        }
+        
+        .team-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-header fade-in">
+    <h1 class="dashboard-title">
+        <i class="fas fa-tachometer-alt"></i> Dashboard
+    </h1>
+    <p class="dashboard-subtitle">
+        Welcome back! Here's your shift overview for 
+        <strong>{{ calendar.month_name[current_month] }} {{ current_year }}</strong>
+    </p>
+</div>
+
+<!-- Stats Section -->
+<div class="stats-grid fade-in">
+    <div class="stat-card">
+        <div class="stat-number">{{ users|length }}</div>
+        <div class="stat-label">Team Members</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ roster_data|length }}</div>
+        <div class="stat-label">Scheduled Days</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">
+            {% set total_shifts = 0 %}
+            {% for date, shifts in roster_data.items() %}
+                {% set total_shifts = total_shifts + shifts|length %}
+            {% endfor %}
+            {{ total_shifts }}
+        </div>
+        <div class="stat-label">Total Shifts</div>
+    </div>
+</div>
+
+<!-- Calendar Section -->
+<div class="calendar-container fade-in">
+    <div class="calendar-header">
+        <h2 class="calendar-title">
+            <i class="fas fa-calendar-alt"></i> {{ calendar.month_name[current_month] }} {{ current_year }}
+        </h2>
+    </div>
+    
+    <div class="calendar-grid">
+        <!-- Day Headers -->
+        <div class="calendar-day-header">Mon</div>
+        <div class="calendar-day-header">Tue</div>
+        <div class="calendar-day-header">Wed</div>
+        <div class="calendar-day-header">Thu</div>
+        <div class="calendar-day-header">Fri</div>
+        <div class="calendar-day-header">Sat</div>
+        <div class="calendar-day-header">Sun</div>
+        
+        <!-- Calendar Days -->
+        {% for week in calendar_data %}
+            {% for day in week %}
+                {% if day == 0 %}
+                    <div class="calendar-cell empty"></div>
+                {% else %}
+                    {% set date_key = current_year ~ '-' ~ '%02d'|format(current_month) ~ '-' ~ '%02d'|format(day) %}
+                    <div class="calendar-cell {% if day == today %}today{% endif %}">
+                        <!-- Date Header -->
+                        <div class="calendar-date-header">{{ '%02d'|format(day) }}</div>
+                        
+                        <!-- Shift Information -->
+                        {% if roster_data[date_key] is defined %}
+                            <div class="shift-info">
+                                {% for shift in roster_data[date_key] %}
+                                    <div class="shift-block">
+                                        <div class="shift-time">{{ shift.shift_time }}</div>
+                                        <div class="shift-users">
+                                            {% for user in shift.users %}
+                                                <span class="shift-user">{{ user }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Team Section -->
+<div class="team-section fade-in">
+    <h2 class="team-header">
+        <i class="fas fa-users"></i> Team Members
+    </h2>
+    
+    <div class="team-grid">
+        {% for user in users %}
+            <div class="team-member">
+                <div class="team-member-name">
+                    <i class="fas fa-user"></i> {{ user.first_name }} {{ user.last_name }}
+                </div>
+                <div class="team-member-role">{{ user.role|title }}</div>
+                <div class="team-member-designation">{{ user.designation }}</div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add calendar interactions
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add click handlers for calendar cells
+        document.querySelectorAll('.calendar-cell:not(.empty)').forEach(cell => {
+            cell.addEventListener('click', function() {
+                // You can add functionality here to show detailed shift info
+                console.log('Calendar cell clicked:', this);
+            });
+        });
+
+        // Add smooth scrolling animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationDelay = Math.random() * 0.3 + 's';
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        });
+
+        document.querySelectorAll('.calendar-container, .team-section').forEach(el => {
+            observer.observe(el);
+        });
+    });
+</script>
+{% endblock %}

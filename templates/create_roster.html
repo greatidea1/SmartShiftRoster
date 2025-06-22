@@ -1,0 +1,398 @@
+{% extends "base.html" %}
+
+{% block title %}Create Roster - Shift Roster Pro{% endblock %}
+
+{% block content %}
+<div class="roster-wizard">
+    <div class="card">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h2 style="color: #333; margin-bottom: 0.5rem;">
+                <i class="fas fa-calendar-plus"></i> Create New Roster
+            </h2>
+            <p style="color: #666;">Set up your team's shift schedule with customizable options</p>
+        </div>
+
+        <div class="progress-bar"
+            style="background: #e1e5e9; height: 4px; border-radius: 2px; margin-bottom: 2rem; position: relative;">
+            <div class="progress-fill"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 100%; width: 0%; border-radius: 2px; transition: width 0.3s ease;">
+            </div>
+        </div>
+
+        <form id="rosterForm">
+            <!-- Step 1: Basic Information -->
+            <div class="step active" id="step1">
+                <h3 style="color: #667eea; margin-bottom: 1.5rem; display: flex; align-items: center;">
+                    <span
+                        style="background: #667eea; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1rem; font-size: 0.9rem;">1</span>
+                    Basic Information
+                </h3>
+
+                <div class="form-group">
+                    <label for="roster_name">Roster Name *</label>
+                    <input type="text" id="roster_name" name="roster_name" required
+                        placeholder="e.g., Night Shift - January 2024">
+                </div>
+
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="schedule_type">Schedule Type *</label>
+                        <select id="schedule_type" name="schedule_type" required>
+                            <option value="">Select Type</option>
+                            <option value="24/7">24/7 Continuous</option>
+                            <option value="business_hours">Business Hours Only</option>
+                            <option value="weekend_only">Weekends Only</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rotation_type">Rotation Type *</label>
+                        <select id="rotation_type" name="rotation_type" required>
+                            <option value="">Select Rotation</option>
+                            <option value="rotating">Rotating Shifts</option>
+                            <option value="fixed">Fixed Assignments</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="shift_hours">Shift Duration (Hours) *</label>
+                        <select id="shift_hours" name="shift_hours" required>
+                            <option value="">Select Duration</option>
+                            <option value="8">8 Hours</option>
+                            <option value="12">12 Hours</option>
+                            <option value="6">6 Hours</option>
+                            <option value="4">4 Hours</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="min_users_per_shift">Minimum Staff per Shift *</label>
+                        <select id="min_users_per_shift" name="min_users_per_shift" required>
+                            <option value="">Select Minimum</option>
+                            <option value="1">1 Person</option>
+                            <option value="2">2 People</option>
+                            <option value="3">3 People</option>
+                            <option value="4">4 People</option>
+                            <option value="5">5 People</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Select Users -->
+            <div class="step" id="step2" style="display: none;">
+                <h3 style="color: #667eea; margin-bottom: 1.5rem; display: flex; align-items: center;">
+                    <span
+                        style="background: #667eea; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1rem; font-size: 0.9rem;">2</span>
+                    Select Team Members
+                </h3>
+
+                <div class="user-selection">
+                    <div
+                        style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                        <p style="color: #666;">Select team members who will be included in this roster:</p>
+                        <div>
+                            <button type="button" id="selectAll" class="btn btn-secondary"
+                                style="padding: 0.5rem 1rem; font-size: 0.9rem;">Select All</button>
+                            <button type="button" id="selectNone" class="btn btn-secondary"
+                                style="padding: 0.5rem 1rem; font-size: 0.9rem; margin-left: 0.5rem;">Clear All</button>
+                        </div>
+                    </div>
+
+                    <div class="users-grid"
+                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem;">
+                        {% for user in users %}
+                        <div class="user-card"
+                            style="border: 2px solid #e1e5e9; border-radius: 8px; padding: 1rem; transition: all 0.3s ease; cursor: pointer;">
+                            <label style="display: flex; align-items: center; cursor: pointer; font-weight: normal;">
+                                <input type="checkbox" name="selected_users" value="{{ user.email }}"
+                                    style="width: auto; margin-right: 1rem;">
+                                <div>
+                                    <div style="font-weight: 600; color: #333;">{{ user.first_name }} {{ user.last_name
+                                        }}</div>
+                                    <div style="font-size: 0.9rem; color: #666;">{{ user.designation }}</div>
+                                    <div style="font-size: 0.8rem; color: #667eea;">{{ user.role.title() }}</div>
+                                </div>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div id="selectionSummary"
+                        style="margin-top: 1rem; padding: 1rem; background: rgba(102, 126, 234, 0.1); border-radius: 8px; display: none;">
+                        <strong>Selected: <span id="selectedCount">0</span> team members</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Creation Method -->
+            <div class="step" id="step3" style="display: none;">
+                <h3 style="color: #667eea; margin-bottom: 1.5rem; display: flex; align-items: center;">
+                    <span
+                        style="background: #667eea; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1rem; font-size: 0.9rem;">3</span>
+                    Choose Creation Method
+                </h3>
+
+                <div class="creation-methods" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <div class="method-card" data-method="auto"
+                        style="border: 2px solid #e1e5e9; border-radius: 12px; padding: 2rem; text-align: center; cursor: pointer; transition: all 0.3s ease;">
+                        <i class="fas fa-magic" style="font-size: 3rem; color: #667eea; margin-bottom: 1rem;"></i>
+                        <h4 style="margin-bottom: 1rem; color: #333;">Auto Generate</h4>
+                        <p style="color: #666; margin-bottom: 1.5rem;">Let the system automatically create an optimized
+                            schedule based on your requirements.</p>
+                        <div class="features" style="text-align: left; font-size: 0.9rem; color: #666;">
+                            <div style="margin-bottom: 0.5rem;"><i class="fas fa-check"
+                                    style="color: #4caf50; margin-right: 0.5rem;"></i> Fair distribution</div>
+                            <div style="margin-bottom: 0.5rem;"><i class="fas fa-check"
+                                    style="color: #4caf50; margin-right: 0.5rem;"></i> Optimal coverage</div>
+                            <div><i class="fas fa-check" style="color: #4caf50; margin-right: 0.5rem;"></i> Quick setup
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="method-card" data-method="manual"
+                        style="border: 2px solid #e1e5e9; border-radius: 12px; padding: 2rem; text-align: center; cursor: pointer; transition: all 0.3s ease;">
+                        <i class="fas fa-hand-pointer"
+                            style="font-size: 3rem; color: #667eea; margin-bottom: 1rem;"></i>
+                        <h4 style="margin-bottom: 1rem; color: #333;">Manual Assignment</h4>
+                        <p style="color: #666; margin-bottom: 1.5rem;">Manually assign team members to specific shifts
+                            with drag-and-drop interface.</p>
+                        <div class="features" style="text-align: left; font-size: 0.9rem; color: #666;">
+                            <div style="margin-bottom: 0.5rem;"><i class="fas fa-check"
+                                    style="color: #4caf50; margin-right: 0.5rem;"></i> Full control</div>
+                            <div style="margin-bottom: 0.5rem;"><i class="fas fa-check"
+                                    style="color: #4caf50; margin-right: 0.5rem;"></i> Custom preferences</div>
+                            <div><i class="fas fa-check" style="color: #4caf50; margin-right: 0.5rem;"></i> Flexible
+                                scheduling</div>
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" id="creation_mode" name="creation_mode" value="">
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="form-navigation"
+                style="display: flex; justify-content: space-between; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e1e5e9;">
+                <button type="button" id="prevBtn" class="btn btn-secondary" style="display: none;">
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
+                <div></div>
+                <button type="button" id="nextBtn" class="btn btn-primary">
+                    Next <i class="fas fa-arrow-right"></i>
+                </button>
+                <button type="submit" id="submitBtn" class="btn btn-primary" style="display: none;">
+                    <i class="fas fa-calendar-plus"></i> Create Roster
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .user-card {
+        position: relative;
+    }
+
+    .user-card:hover {
+        border-color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+    }
+
+    .user-card input:checked+div {
+        color: #667eea;
+    }
+
+    .user-card:has(input:checked) {
+        border-color: #667eea;
+        background: rgba(102, 126, 234, 0.05);
+    }
+
+    .method-card:hover {
+        border-color: #667eea;
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+    }
+
+    .method-card.selected {
+        border-color: #667eea;
+        background: rgba(102, 126, 234, 0.05);
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    @media (max-width: 768px) {
+        .creation-methods {
+            grid-template-columns: 1fr;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr !important;
+        }
+
+        .users-grid {
+            grid-template-columns: 1fr !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let currentStep = 1;
+    const totalSteps = 3;
+
+    // Step navigation
+    document.getElementById('nextBtn').addEventListener('click', function () {
+        if (validateCurrentStep()) {
+            if (currentStep < totalSteps) {
+                goToStep(currentStep + 1);
+            }
+        }
+    });
+
+    document.getElementById('prevBtn').addEventListener('click', function () {
+        if (currentStep > 1) {
+            goToStep(currentStep - 1);
+        }
+    });
+
+    function goToStep(step) {
+        // Hide current step
+        document.getElementById(`step${currentStep}`).style.display = 'none';
+
+        // Show target step
+        document.getElementById(`step${step}`).style.display = 'block';
+        currentStep = step;
+
+        // Update progress bar
+        const progress = (currentStep / totalSteps) * 100;
+        document.querySelector('.progress-fill').style.width = progress + '%';
+
+        // Update navigation buttons
+        document.getElementById('prevBtn').style.display = currentStep > 1 ? 'block' : 'none';
+        document.getElementById('nextBtn').style.display = currentStep < totalSteps ? 'block' : 'none';
+        document.getElementById('submitBtn').style.display = currentStep === totalSteps ? 'block' : 'none';
+    }
+
+    function validateCurrentStep() {
+        if (currentStep === 1) {
+            const required = ['roster_name', 'schedule_type', 'rotation_type', 'shift_hours', 'min_users_per_shift'];
+            for (let field of required) {
+                if (!document.getElementById(field).value.trim()) {
+                    showAlert(`Please fill in the ${field.replace('_', ' ')} field`, 'error');
+                    return false;
+                }
+            }
+        } else if (currentStep === 2) {
+            const selected = document.querySelectorAll('input[name="selected_users"]:checked');
+            if (selected.length === 0) {
+                showAlert('Please select at least one team member', 'error');
+                return false;
+            }
+        } else if (currentStep === 3) {
+            if (!document.getElementById('creation_mode').value) {
+                showAlert('Please select a creation method', 'error');
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // Continue from selectAll listener
+    document.getElementById('selectAll').addEventListener('click', function () {
+        document.querySelectorAll('input[name="selected_users"]').forEach(cb => cb.checked = true);
+        updateSelectedCount();
+    });
+
+    document.getElementById('selectNone').addEventListener('click', function () {
+        document.querySelectorAll('input[name="selected_users"]').forEach(cb => cb.checked = false);
+        updateSelectedCount();
+    });
+
+    document.querySelectorAll('input[name="selected_users"]').forEach(cb => {
+        cb.addEventListener('change', updateSelectedCount);
+    });
+
+    function updateSelectedCount() {
+        const count = document.querySelectorAll('input[name="selected_users"]:checked').length;
+        document.getElementById('selectedCount').textContent = count;
+        document.getElementById('selectionSummary').style.display = count > 0 ? 'block' : 'none';
+    }
+
+    // Handle creation method selection
+    document.querySelectorAll('.method-card').forEach(card => {
+        card.addEventListener('click', function () {
+            document.querySelectorAll('.method-card').forEach(c => c.classList.remove('selected'));
+            this.classList.add('selected');
+            document.getElementById('creation_mode').value = this.getAttribute('data-method');
+        });
+    });
+
+    // Handle form submission
+    document.getElementById('rosterForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        if (!validateCurrentStep()) return;
+
+        const selectedUsers = Array.from(document.querySelectorAll('input[name="selected_users"]:checked')).map(cb => cb.value);
+
+        const payload = {
+            roster_name: document.getElementById('roster_name').value.trim(),
+            schedule_type: document.getElementById('schedule_type').value,
+            rotation_type: document.getElementById('rotation_type').value,
+            shift_hours: document.getElementById('shift_hours').value,
+            min_users_per_shift: document.getElementById('min_users_per_shift').value,
+            selected_users: selectedUsers,
+            creation_mode: document.getElementById('creation_mode').value,
+        };
+
+        fetch('/create_roster', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+            .then(res => res.json().then(data => ({ status: res.status, body: data })))
+            .then(({ status, body }) => {
+                if (status === 201) {
+                    showAlert(body.message || "Roster created!", "success");
+                    setTimeout(() => {
+                        window.location.href = "/dashboard";
+                    }, 1500);
+                } else {
+                    showAlert(body.error || "Something went wrong", "error");
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                showAlert("Failed to create roster", "error");
+            });
+    });
+
+    // Alert helper
+    function showAlert(message, type) {
+        const existing = document.getElementById('formAlert');
+        if (existing) existing.remove();
+
+        const alert = document.createElement('div');
+        alert.id = 'formAlert';
+        alert.textContent = message;
+        alert.style.padding = '1rem';
+        alert.style.marginTop = '1rem';
+        alert.style.borderRadius = '6px';
+        alert.style.fontWeight = 'bold';
+        alert.style.color = type === 'success' ? '#155724' : '#721c24';
+        alert.style.backgroundColor = type === 'success' ? '#d4edda' : '#f8d7da';
+        alert.style.border = type === 'success' ? '1px solid #c3e6cb' : '1px solid #f5c6cb';
+
+        document.querySelector('.form-navigation').prepend(alert);
+    }
+</script>
+{% endblock %}

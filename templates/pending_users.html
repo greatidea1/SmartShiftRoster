@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Pending User Approvals - Shift Roster Pro{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 style="margin-bottom: 1.5rem; color: #333;">
+        <i class="fas fa-user-clock" style="margin-right: 0.5rem; color: #667eea;"></i>
+        Pending User Approvals
+    </h2>
+
+    {% if pending_users %}
+    <div class="pending-users-grid"
+        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem;">
+        {% for user in pending_users %}
+        <div class="card user-card" style="padding: 1.5rem; border: 1px solid #e1e5e9; border-radius: 8px;">
+            <div style="margin-bottom: 0.5rem;">
+                <strong style="color: #333;">{{ user.first_name }} {{ user.last_name }}</strong>
+            </div>
+            <div style="font-size: 0.9rem; color: #555;">{{ user.email }}</div>
+            <div style="font-size: 0.85rem; color: #777; margin: 0.5rem 0;">
+                <span><strong>Designation:</strong> {{ user.designation }}</span><br>
+                <span><strong>Role:</strong> {{ user.role.title() }}</span><br>
+                <span><strong>Status:</strong> <span style="color: #e67e22;">{{ user.status.title() }}</span></span>
+            </div>
+            <a href="{{ url_for('approve_user', user_id=user.id) }}" class="btn btn-success"
+                style="margin-top: 1rem; display: inline-block;">
+                <i class="fas fa-check-circle"></i> Approve
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info"
+        style="margin-top: 2rem; padding: 1rem; background: #eef1f7; border: 1px solid #ccd3dc; border-radius: 6px; color: #555;">
+        <i class="fas fa-info-circle" style="color: #667eea; margin-right: 0.5rem;"></i>
+        No pending users found.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

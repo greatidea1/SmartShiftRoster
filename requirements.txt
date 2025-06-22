@@ -1,0 +1,4 @@
+flask
+pyjwt
+flask-bcrypt
+firebase_admin

@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Shift Roster Pro{% endblock %}
+
+{% block content %}
+<div class="auth-container" style="max-width: 500px; margin: 0 auto;">
+    <div class="card fade-in">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h2 style="color: #333; margin-bottom: 0.5rem;">
+                <i class="fas fa-user-plus"></i> Create Account
+            </h2>
+            <p style="color: #666;">Join Shift Roster Pro and start managing your team schedules</p>
+        </div>
+
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Creating your account...</p>
+        </div>
+
+        <form id="registerForm">
+            <div class="form-section" style="margin-bottom: 2rem;">
+                <h3 style="color: #667eea; margin-bottom: 1rem; border-bottom: 2px solid #e1e5e9; padding-bottom: 0.5rem;">
+                    <i class="fas fa-building"></i> Organization Details
+                </h3>
+                
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="company_name">Company/Organization Name *</label>
+                        <input type="text" id="company_name" name="company_name" required 
+                               placeholder="Enter organization name">
+                    </div>
+                    <div class="form-group">
+                        <label for="country">Country *</label>
+                        <select id="country" name="country" required>
+                            <option value="">Select Country</option>
+                            <option value="US">United States</option>
+                            <option value="UK">United Kingdom</option>
+                            <option value="CA">Canada</option>
+                            <option value="AU">Australia</option>
+                            <option value="IN">India</option>
+                            <option value="DE">Germany</option>
+                            <option value="FR">France</option>
+                            <option value="JP">Japan</option>
+                            <option value="SG">Singapore</option>
+                            <option value="OTHER">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="timezone">Timezone *</label>
+                    <select id="timezone" name="timezone" required>
+                        <option value="">Select Timezone</option>
+                        <option value="UTC-12">UTC-12:00</option>
+                        <option value="UTC-11">UTC-11:00</option>
+                        <option value="UTC-10">UTC-10:00</option>
+                        <option value="UTC-9">UTC-09:00</option>
+                        <option value="UTC-8">UTC-08:00</option>
+                        <option value="UTC-7">UTC-07:00</option>
+                        <option value="UTC-6">UTC-06:00</option>
+                        <option value="UTC-5">UTC-05:00</option>
+                        <option value="UTC-4">UTC-04:00</option>
+                        <option value="UTC-3">UTC-03:00</option>
+                        <option value="UTC-2">UTC-02:00</option>
+                        <option value="UTC-1">UTC-01:00</option>
+                        <option value="UTC+0">UTC+00:00</option>
+                        <option value="UTC+1">UTC+01:00</option>
+                        <option value="UTC+2">UTC+02:00</option>
+                        <option value="UTC+3">UTC+03:00</option>
+                        <option value="UTC+4">UTC+04:00</option>
+                        <option value="UTC+5">UTC+05:00</option>
+                        <option value="UTC+5:30">UTC+05:30 (India)</option>
+                        <option value="UTC+6">UTC+06:00</option>
+                        <option value="UTC+7">UTC+07:00</option>
+                        <option value="UTC+8">UTC+08:00</option>
+                        <option value="UTC+9">UTC+09:00</option>
+                        <option value="UTC+10">UTC+10:00</option>
+                        <option value="UTC+11">UTC+11:00</option>
+                        <option value="UTC+12">UTC+12:00</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-section" style="margin-bottom: 2rem;">
+                <h3 style="color: #667eea; margin-bottom: 1rem; border-bottom: 2px solid #e1e5e9; padding-bottom: 0.5rem;">
+                    <i class="fas fa-user"></i> Personal Information
+                </h3>
+                
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="first_name">First Name *</label>
+                        <input type="text" id="first_name" name="first_name" required 
+                               placeholder="Enter first name">
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Last Name *</label>
+                        <input type="text" id="last_name" name="last_name" required 
+                               placeholder="Enter last name">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required 
+                           placeholder="Enter email address">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password *</label>
+                    <input type="password" id="password" name="password" required 
+                           placeholder="Enter password" minlength="6">
+                </div>
+
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="role">Role *</label>
+                        <select id="role" name="role" required>
+                            <option value="">Select Role</option>
+                            <option value="superadmin">Super Admin</option>
+                            <option value="admin">Admin</option>
+                            <option value="manager">Manager</option>
+                            <option value="employee">Employee</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="designation">Designation *</label>
+                        <input type="text" id="designation" name="designation" required 
+                               placeholder="e.g., IT Manager, Nurse, Security Officer">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions" style="text-align: center;">
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </button>
+                <p style="color: #666;">
+                    Already have an account? 
+                    <a href="{{ url_for('login') }}" style="color: #667eea; text-decoration: none;">Sign in here</a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('registerForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+    
+    // Validate form
+    if (!validateForm(data)) {
+        return;
+    }
+    
+    showLoading(true);
+    
+    try {
+        const result = await apiCall('/register', 'POST', data);
+        
+        if (result.success) {
+            showAlert(result.data.message, 'success');
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 2000);
+        } else {
+            showAlert(result.data.error || 'Registration failed', 'error');
+        }
+    } catch (error) {
+        showAlert('An error occurred. Please try again.', 'error');
+    } finally {
+        showLoading(false);
+    }
+});
+
+function validateForm(data) {
+    const required = ['company_name', 'country', 'timezone', 'first_name', 'last_name', 'email', 'password', 'role', 'designation'];
+    
+    for (let field of required) {
+        if (!data[field] || data[field].trim() === '') {
+            showAlert(`Please fill in the ${field.replace('_', ' ')} field`, 'error');
+            return false;
+        }
+    }
+    
+    if (data.password.length < 6) {
+        showAlert('Password must be at least 6 characters long', 'error');
+        return false;
+    }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(data.email)) {
+        showAlert('Please enter a valid email address', 'error');
+        return false;
+    }
+    
+    return true;
+}
+
+// Add role explanation
+document.getElementById('role').addEventListener('change', function() {
+    const roleInfo = document.getElementById('roleInfo');
+    if (roleInfo) roleInfo.remove();
+    
+    const explanations = {
+        'superadmin': 'Full system control, can manage organization settings and all users',
+        'admin': 'Can manage rosters and approve new users (excluding super admins)',
+        'manager': 'Can create and edit rosters, view all schedules',
+        'employee': 'Can view assigned schedules and request changes'
+    };
+    
+    if (this.value && explanations[this.value]) {
+        const info = document.createElement('p');
+        info.id = 'roleInfo';
+        info.style.cssText = 'font-size: 0.9rem; color: #667eea; margin-top: 0.5rem; font-style: italic;';
+        info.textContent = explanations[this.value];
+        this.parentNode.appendChild(info);
+    }
+});
+</script>
+{% endblock %}
